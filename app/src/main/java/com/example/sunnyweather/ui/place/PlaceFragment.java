@@ -1,9 +1,10 @@
-package com.example.sunnyweather.ui.Fragement;
+package com.example.sunnyweather.ui.place;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sunnyweather.MainActivity;
 import com.example.sunnyweather.R;
 import com.example.sunnyweather.databinding.PlaceFragmentBinding;
 import com.example.sunnyweather.logic.model.PlacePackage.Place;
 import com.example.sunnyweather.logic.model.PlacePackage.PlaceResponse;
-import com.example.sunnyweather.ui.place.PlaceAdapter;
-import com.example.sunnyweather.ui.place.PlaceViewModel;
 import com.example.sunnyweather.ui.weather.WeatherActivity;
 
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ import java.util.ArrayList;
 public class PlaceFragment extends Fragment {
 
     public PlaceViewModel mViewModel;
+    public PlaceFragmentBinding binding;
 
     public static PlaceFragment newInstance() {
         return new PlaceFragment();
@@ -41,7 +42,7 @@ public class PlaceFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         //初始化databinding
-       ViewDataBinding binding = DataBindingUtil.inflate(inflater,R.layout.place__fragment,container,false);
+       binding = DataBindingUtil.inflate(inflater,R.layout.place__fragment,container,false);
        return binding.getRoot();
     }
 
@@ -49,18 +50,7 @@ public class PlaceFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
-        if (mViewModel.isPlaceSaved()){
-            Place place = mViewModel.getSavedPlace();
-            Intent intent = new Intent(getContext(), WeatherActivity.class);
-            intent.putExtra("location_lng",place.getLocation().getLng());
-            intent.putExtra("location_lat",place.getLocation().getLat());
-            intent.putExtra("place_name",place.getName());
-            startActivity(intent);
-        }
-        
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        PlaceFragmentBinding binding = DataBindingUtil.setContentView(getActivity(),R.layout.place__fragment);
-        binding.setLifecycleOwner(getActivity());
         binding.placeArrayList.setLayoutManager(layoutManager);
         PlaceAdapter adapter = new PlaceAdapter(this,mViewModel.placeList);
         binding.placeArrayList.setAdapter(adapter);

@@ -7,7 +7,7 @@ import android.content.Context;
 public class SunnyWeatherApplication extends Application {
     @SuppressLint("StaticFieldLeak")
     public static Context context;
-    private static final String TOKEN  = "a9OHpzRgHkSdwXEN";
+    public static final String TOKEN  = "a9OHpzRgHkSdwXEN";
 
     @Override
     public void onCreate() {

@@ -7,11 +7,10 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.example.sunnyweather.logic.Repository;
-import com.example.sunnyweather.logic.model.Place;
-import com.example.sunnyweather.logic.model.PlaceResponse;
+import com.example.sunnyweather.logic.model.PlacePackage.Place;
+import com.example.sunnyweather.logic.model.PlacePackage.PlaceResponse;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PlaceViewModel extends ViewModel {
     //保存当前用户查询的城市
@@ -30,5 +29,17 @@ public class PlaceViewModel extends ViewModel {
 
     public void searchPlaces(String query){
         searchLiveData.setValue(query);
+    }
+
+    public void savePlace(Place place){
+        Repository.getInstance().savePlace(place);
+    }
+
+    public Place getSavedPlace(){
+        return Repository.getInstance().getSavedPlace();
+    }
+
+    public boolean isPlaceSaved(){
+        return Repository.getInstance().isPlaceSaved();
     }
 }

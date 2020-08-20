@@ -1,4 +1,4 @@
-package com.example.sunnyweather.logic.model;
+package com.example.sunnyweather.logic.model.PlacePackage;
 
 import java.util.ArrayList;
 

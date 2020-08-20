@@ -1,4 +1,4 @@
-package com.example.sunnyweather.logic.model;
+package com.example.sunnyweather.logic.model.PlacePackage;
 
 public class Place{   //保存每一地点的位置信息
     private String name;

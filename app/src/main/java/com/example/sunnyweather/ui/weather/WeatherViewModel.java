@@ -10,17 +10,17 @@ import com.example.sunnyweather.logic.Repository;
 import com.example.sunnyweather.logic.model.PlacePackage.Location;
 import com.example.sunnyweather.logic.model.Weather;
 
-public class WeatherVIewModel extends ViewModel {
+public class WeatherViewModel extends ViewModel {
     private MutableLiveData<Location> locationLiveData = new MutableLiveData<>();
-    String locationLng = "";
-    String locationLat = "";
-    String placeName = "";
+    public String locationLng = "";
+    public String locationLat = "";
+    public String placeName = "";
 
     public LiveData<Weather> weatherLiveData = Transformations.switchMap(locationLiveData, new Function<Location, LiveData<Weather>>() {
         @Override
         public LiveData<Weather> apply(Location input) {
             try {
-                return Repository.refreshWeather(input.getLng(),input.getLat());
+                return Repository.getInstance().refreshWeather(input.getLng(),input.getLat());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -28,7 +28,7 @@ public class WeatherVIewModel extends ViewModel {
         }
     });
 
-    public void refreshEeather(String lng,String lat){
+    public void refreshWeather(String lng,String lat){
         locationLiveData.setValue(new Location(lng,lat));
     }
 }
