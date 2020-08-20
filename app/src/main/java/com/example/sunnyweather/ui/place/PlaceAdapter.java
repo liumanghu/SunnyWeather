@@ -51,6 +51,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.ViewHolder> 
                     activity1.weatherViewModel.locationLng = place.getLocation().getLng();
                     activity1.weatherViewModel.locationLat = place.getLocation().getLat();
                     activity1.weatherViewModel.placeName = place.getName();
+                    fragment.mViewModel.savePlace(place);
                     activity1.refreshWeather();
                 }else {
                     Intent intent = new Intent(fragment.getContext(), WeatherActivity.class);

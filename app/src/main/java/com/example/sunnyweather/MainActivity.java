@@ -32,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("location_lat",place.getLocation().getLat());
             intent.putExtra("place_name",place.getName());
             startActivity(intent);
+
+
+
+
+
             finish();
         }else {
             transaction.replace(R.id.mainFragment,new PlaceFragment());
