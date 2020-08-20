@@ -1,5 +1,6 @@
 package com.example.sunnyweather.ui.Fragement;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,19 +21,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunnyweather.R;
 import com.example.sunnyweather.databinding.PlaceFragmentBinding;
-import com.example.sunnyweather.logic.model.Place;
-import com.example.sunnyweather.logic.model.PlaceResponse;
+import com.example.sunnyweather.logic.model.PlacePackage.Place;
+import com.example.sunnyweather.logic.model.PlacePackage.PlaceResponse;
 import com.example.sunnyweather.ui.place.PlaceAdapter;
 import com.example.sunnyweather.ui.place.PlaceViewModel;
+import com.example.sunnyweather.ui.weather.WeatherActivity;
 
 import java.util.ArrayList;
 
-public class Place_Fragment extends Fragment {
+public class PlaceFragment extends Fragment {
 
-    private PlaceViewModel mViewModel;
+    public PlaceViewModel mViewModel;
 
-    public static Place_Fragment newInstance() {
-        return new Place_Fragment();
+    public static PlaceFragment newInstance() {
+        return new PlaceFragment();
     }
 
     @Override
@@ -47,11 +49,20 @@ public class Place_Fragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
+        if (mViewModel.isPlaceSaved()){
+            Place place = mViewModel.getSavedPlace();
+            Intent intent = new Intent(getContext(), WeatherActivity.class);
+            intent.putExtra("location_lng",place.getLocation().getLng());
+            intent.putExtra("location_lat",place.getLocation().getLat());
+            intent.putExtra("place_name",place.getName());
+            startActivity(intent);
+        }
+        
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         PlaceFragmentBinding binding = DataBindingUtil.setContentView(getActivity(),R.layout.place__fragment);
         binding.setLifecycleOwner(getActivity());
         binding.placeArrayList.setLayoutManager(layoutManager);
-        PlaceAdapter adapter = new PlaceAdapter(mViewModel.placeList);
+        PlaceAdapter adapter = new PlaceAdapter(this,mViewModel.placeList);
         binding.placeArrayList.setAdapter(adapter);
 
         binding.searchPlaceEdit.addTextChangedListener(new TextWatcher() {
@@ -81,15 +92,20 @@ public class Place_Fragment extends Fragment {
         mViewModel.placeResponseLiveData.observe(getViewLifecycleOwner(), new Observer<PlaceResponse>() {
             @Override
             public void onChanged(PlaceResponse placeResponse) {
-                ArrayList<Place> places = placeResponse.getPlaces();
-                if (places != null){
-                    binding.placeArrayList.setVisibility(View.VISIBLE);
-                    mViewModel.placeList.clear();
-                    mViewModel.placeList.addAll(places);
-                    adapter.notifyDataSetChanged();
+                if (placeResponse != null){
+                    ArrayList<Place> places = placeResponse.getPlaces();
+                    if (places != null){
+                        binding.placeArrayList.setVisibility(View.VISIBLE);
+                        mViewModel.placeList.clear();
+                        mViewModel.placeList.addAll(places);
+                        adapter.notifyDataSetChanged();
+                    }else {
+                        Toast.makeText(getActivity(), "未查到任何地点", Toast.LENGTH_SHORT).show();
+                    }
                 }else {
-                    Toast.makeText(getActivity(), "未查到任何地点", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "请链接互联网", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
